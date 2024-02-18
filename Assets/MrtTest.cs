@@ -25,14 +25,19 @@ public class MrtTest : MonoBehaviour
 
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
+        var rtdepth = RenderTexture.GetTemporary(source.width, source.height, 32, RenderTextureFormat.Depth);
         var rt1 = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.Default);
         var rt2 = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.DefaultHDR);
+
+        rtdepth.name = "test depth";
+        rt1.name = "test rt1";
+        rt2.name = "test rt2";
 
         _mrt[0] = rt1.colorBuffer;
         _mrt[1] = rt2.colorBuffer;
 
         // Blit with a MRT.
-        Graphics.SetRenderTarget(_mrt, rt1.depthBuffer);
+        Graphics.SetRenderTarget(_mrt, rtdepth.depthBuffer);
         Graphics.Blit(null, _material, 0);
 
         // Combine them and output to the destination.
